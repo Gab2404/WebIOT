@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Profil</title>
+  <link rel="stylesheet" href="assets/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="logo">IoT</div>
+    <nav>
+      <a href="index.html">Accueil</a>
+      <a href="login.html">Connexion</a>
+      <a href="register.html">S’inscrire</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-content" id="profile-info">
+        <h2>Chargement du profil...</h2>
+      </div>
+
+      <div class="hero-content" style="margin-top: 24px;">
+        <button id="btn-fetch-mqtt" class="submit-btn">Récupérer les données IoT (MQTT)</button>
+        <pre id="mqtt-output" class="card" style="margin-top:16px; padding:16px; white-space:pre-wrap;"></pre>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>© <span id="year"></span> MonSite — Tous droits réservés</p>
+  </footer>
+
+  <script src="assets/main.js"></script>
+</body>
+</html>
