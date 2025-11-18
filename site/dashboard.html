@@ -5,7 +5,7 @@
   <title>IOT - Dashboard</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" href="assets/css/base.css" />
-  <link rel="stylesheet" href="assets/css/dashboard.css" />
+  <link rel="stylesheet" href="assets/css/dashboard.css?v=2" />
 </head>
 <body>
   <!-- Topbar -->
@@ -13,8 +13,6 @@
     <div class="logo">IOT</div>
     <nav>
         <a href="index.html">Accueil</a>
-        <a href="profile.html">Profil</a> <!-- seulement si nécessaire -->
-        <!-- Suppression des boutons connexion et s'inscrire -->
     </nav>
   </header>
 
@@ -42,6 +40,7 @@
   </footer>
 
   <!-- Scripts -->
+  <script src="assets/main.js"></script>
   <script>
     document.getElementById("mqttForm").addEventListener("submit", async (e) => {
         e.preventDefault();
@@ -58,9 +57,6 @@
         console.log("Réponse API:", data);
         document.getElementById("status").innerText = "Message envoyé : " + (data.sent ?? "ERREUR: clé manquante");
     });
-
-    // Mettre à jour l'année automatiquement
-    document.getElementById("year").innerText = new Date().getFullYear();
   </script>
 </body>
 </html>

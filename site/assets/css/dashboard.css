@@ -1,85 +1,10 @@
 /* ----- dashboard.css : styles spécifiques à la page dashboard ----- */
 
-/* ======== TOPBAR ======== */
-/* Hérite de base.css pour la structure */
-.site-header {
-  padding: 16px 48px; /* même que profile */
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: rgba(10, 14, 39, 0.85);
-  backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(0, 224, 255, 0.15);
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
-  transition: all 0.3s ease;
-}
-
-nav {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-nav a {
-  color: #f5f5f5;
-  text-decoration: none;
-  font-size: 0.95rem;
-  padding: 8px 16px;
-  border-radius: 8px;
-  transition: all 0.3s ease;
-}
-
-nav a:hover {
-  background: rgba(0, 224, 255, 0.1);
-  color: #00e0ff;
-}
-
-/* Bouton Profil */
-nav a.profile-btn {
-  background: linear-gradient(135deg, #00e0ff, #7b61ff);
-  color: #0a0e27;
-}
-
 /* ======== HERO SECTION ======== */
-.hero {
-  padding: 80px 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 32px;
-  text-align: center;
-  position: relative;
-}
+/* Les styles de .hero sont déjà dans base.css, on garde juste les surcharges si nécessaires */
 
-.hero::before {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 600px;
-  height: 600px;
-  background: radial-gradient(circle, rgba(0, 224, 255, 0.15), transparent 70%);
-  animation: float 6s ease-in-out infinite;
-  pointer-events: none;
-}
-
-@keyframes float {
-  0%, 100% { transform: translateX(-50%) translateY(0); }
-  50% { transform: translateX(-50%) translateY(-20px); }
-}
-
-.hero-content {
-  max-width: 600px;
-  width: 90%;
-  margin-left: auto;
-  margin-right: auto;
-  z-index: 2;
-}
-
-.hero h1 {
-  margin-bottom: 16px;
-  font-weight: 800;
+.hero-content p:first-of-type {
+    margin-bottom: 24px;
 }
 
 /* ======== FORMULAIRE MQTT ======== */
@@ -97,37 +22,9 @@ nav a.profile-btn {
   width: 100%;
 }
 
-.submit-btn {
-  padding: 14px 32px;
-  border-radius: 999px;
-  background: linear-gradient(135deg, #00e0ff, #7b61ff);
-  border: none;
-  color: #0a0e27;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
 /* ======== OUTPUT STATUS ======== */
 #status {
   margin-top: 16px;
   text-align: center;
   font-weight: 600;
-}
-
-/* ======== RESPONSIVE ======== */
-@media (max-width: 768px) {
-  .site-header {
-    padding: 12px 20px;
-    flex-wrap: wrap;
-    gap: 12px;
-  }
-  nav {
-    width: 100%;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-  .hero {
-    padding: 60px 20px;
-  }
 }

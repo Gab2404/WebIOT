@@ -26,13 +26,16 @@ async function checkUserStatus() {
 
     if (!nav) return;
 
+    // Détecter la page actuelle
+    const currentPage = window.location.pathname.split('/').pop();
+
     if (user) {
       // Cacher les boutons de connexion / inscription
       if (loginBtn) loginBtn.style.display = "none";
       if (registerBtn) registerBtn.style.display = "none";
 
-      // Bouton Profil
-      if (!document.querySelector("#profile-btn")) {
+      // Bouton Profil (ne pas afficher si on est sur profile.html)
+      if (!document.querySelector("#profile-btn") && currentPage !== "profile.html") {
         const profile = document.createElement("a");
         profile.textContent = "Profil";
         profile.href = "profile.html";
@@ -41,8 +44,8 @@ async function checkUserStatus() {
         nav.appendChild(profile);
       }
 
-      // Bouton Dashboard
-      if (!document.querySelector("#dashboard-btn")) {
+      // Bouton Dashboard (ne pas afficher si on est sur dashboard.html)
+      if (!document.querySelector("#dashboard-btn") && currentPage !== "dashboard.html") {
         const dashboard = document.createElement("a");
         dashboard.textContent = "Dashboard";
         dashboard.href = "dashboard.html";
