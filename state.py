@@ -1,7 +1,6 @@
 from pathlib import Path
 from typing import Optional, List, Dict, Any
 import os
-import json
 
 # ==========================
 # Chemins fichiers
@@ -36,6 +35,10 @@ last_message: Optional[Dict[str, Any]] = None
 mqtt_connected: bool = False
 chat_messages: List[Dict[str, Any]] = []
 CHAT_MAX = 100
+
+# Contenu brut du DERNIER message publié par le site sur MQTT.
+# Permet d'ignorer l'écho de ce message dans _on_message pour éviter les doublons.
+last_sent_raw_from_web: Optional[str] = None
 
 
 def add_chat(msg: Dict[str, Any]) -> None:

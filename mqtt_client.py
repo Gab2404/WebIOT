@@ -20,18 +20,27 @@ def _on_connect(client, userdata, flags, rc):
 def _on_message(client, userdata, msg):
     """
     Callback quand un message arrive sur MQTT.
+
     On reçoit TOUT ce qui passe sur MQTT_TOPIC (iot/demo).
 
-    Pour le chat :
-      - si payload = {"from": "web", ...} -> message envoyé par le site -> on NE l'ajoute pas
-      - tout le reste (device, MQTTX, texte brut...) -> ajouté comme "from": "device"
+    - Si le message est exactement le dernier payload brut publié par le site
+      (state.last_sent_raw_from_web), on considère que c'est l'écho de notre
+      propre message -> on l'ignore pour ne pas le dupliquer dans le chat.
+    - Tous les autres messages sont ajoutés dans l'historique comme "device".
     """
     raw = msg.payload.decode(errors="ignore")
+
+    # Ignorer l'écho du dernier message envoyé par le site
+    if state.last_sent_raw_from_web is not None and raw == state.last_sent_raw_from_web:
+        # On remet à None pour ne pas ignorer d'autres messages identiques plus tard
+        state.last_sent_raw_from_web = None
+        return
 
     try:
         payload = json.loads(raw)
     except Exception:
-        payload = raw  # pas du JSON -> texte brut
+        # pas du JSON -> texte brut
+        payload = raw
 
     ts = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
     state.last_message = {
@@ -43,10 +52,6 @@ def _on_message(client, userdata, msg):
     print("[MQTT] msg:", state.last_message)
 
     if msg.topic == state.MQTT_SUB_TOPIC:
-        if isinstance(payload, dict) and payload.get("from") == "web":
-            # message provenant du site -> pas dans l'historique "device"
-            return
-
         state.add_chat(
             {
                 "from": "device",
