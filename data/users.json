@@ -5,5 +5,12 @@
     "email": "gabriel@gmail.com",
     "passwordHash": "$pbkdf2-sha256$29000$2jsnhDBGSInxPudcSylFqA$.QP1p8aaI1CuruDagfKklpe0P6l6ajKptemzThQL7Qw",
     "role": "user"
+  },
+  {
+    "id": "19a966d0907-2249ea",
+    "username": "yakuza",
+    "email": "test@gmail.com",
+    "passwordHash": "$pbkdf2-sha256$29000$FIJQCmGMEaI0ZgzBOMf4fw$ljMW1boJs4Gk.WkcAOQkyE3CHa3haW0MAr1HzRvLATU",
+    "role": "user"
   }
 ]
