@@ -12,6 +12,31 @@ if (discoverBtn) {
 }
 
 // ==========================
+// Changer le bouton principal sur index.html si connecté
+// ==========================
+async function updateIndexButton() {
+  const demoBtn = document.getElementById("demo-btn");
+  if (!demoBtn) return;
+
+  try {
+    const res = await fetch("/api/auth/me");
+    const json = await res.json();
+    
+    if (json.user) {
+      // Utilisateur connecté : changer en bouton Dashboard
+      demoBtn.textContent = "Dashboard";
+      demoBtn.onclick = () => {
+        window.location.href = "dashboard.html";
+      };
+    }
+  } catch (e) {
+    console.error("Erreur vérification utilisateur:", e);
+  }
+}
+
+updateIndexButton();
+
+// ==========================
 // Gestion de la session (header)
 // ==========================
 async function checkUserStatus() {
