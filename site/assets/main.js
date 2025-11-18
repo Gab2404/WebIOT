@@ -220,3 +220,43 @@ if (btnFetchMqtt && mqttOutput) {
     }
   });
 }
+
+// ==========================
+// Envoi d'un message MQTT
+// ==========================
+const btnSendMqtt = document.getElementById("btn-send-mqtt");
+const mqttMessageInput = document.getElementById("mqtt-message");
+const mqttSendStatus = document.getElementById("mqtt-send-status");
+
+if (btnSendMqtt) {
+  btnSendMqtt.addEventListener("click", async () => {
+    const message = mqttMessageInput.value.trim();
+
+    if (!message) {
+      mqttSendStatus.textContent = "❌ Message vide";
+      mqttSendStatus.style.color = "#ff7b7b";
+      return;
+    }
+
+    mqttSendStatus.textContent = "⏳ Envoi en cours...";
+
+    try {
+      const res = await fetch("/api/iot/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message }),
+      });
+
+      const json = await res.json();
+
+      if (!res.ok) throw new Error(json.error || "Erreur MQTT");
+
+      mqttSendStatus.textContent = "✅ Message envoyé !";
+      mqttSendStatus.style.color = "#8ef58e";
+      mqttMessageInput.value = "";
+    } catch (err) {
+      mqttSendStatus.textContent = "❌ " + err.message;
+      mqttSendStatus.style.color = "#ff7b7b";
+    }
+  });
+}

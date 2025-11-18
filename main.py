@@ -30,9 +30,14 @@ if not USERS_FILE.exists():
 MQTT_HOST = os.environ.get("MQTT_HOST", "test.mosquitto.org")
 MQTT_PORT = int(os.environ.get("MQTT_PORT", "1883"))
 MQTT_SUB_TOPIC = os.environ.get("MQTT_SUB_TOPIC", "iot/demo")
+MQTT_PUB_TOPIC = os.environ.get("MQTT_PUB_TOPIC", "iot/demo")  # <—
 
 last_message: Optional[dict] = None
 mqtt_connected: bool = False
+
+# Client MQTT global (pour publish)
+mqtt_client = mqtt.Client()
+
 
 def _on_connect(client, userdata, flags, rc):
     global mqtt_connected
@@ -45,6 +50,7 @@ def _on_connect(client, userdata, flags, rc):
         mqtt_connected = False
         print("[mqtt] connect error rc=", rc)
 
+
 def _on_message(client, userdata, msg):
     global last_message
     raw = msg.payload.decode(errors="ignore")
@@ -52,26 +58,29 @@ def _on_message(client, userdata, msg):
         payload = json.loads(raw)
     except Exception:
         payload = raw
+
     last_message = {
         "topic": msg.topic,
         "payload": payload,
         "raw": raw,
         "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
     }
+
     print("[mqtt] message:", last_message)
 
+
 def _mqtt_loop():
-    client = mqtt.Client()
-    client.on_connect = _on_connect
-    client.on_message = _on_message
+    mqtt_client.on_connect = _on_connect
+    mqtt_client.on_message = _on_message
     try:
         print(f"[mqtt] connecting to {MQTT_HOST}:{MQTT_PORT} ...")
-        client.connect(MQTT_HOST, MQTT_PORT, keepalive=60)
-        client.loop_forever(retry_first_connection=True)
+        mqtt_client.connect(MQTT_HOST, MQTT_PORT, keepalive=60)
+        mqtt_client.loop_forever(retry_first_connection=True)
     except Exception as e:
         print("[mqtt] connection error:", e)
 
-# démarrage du thread MQTT au lancement du backend
+
+# démarrage du thread MQTT
 threading.Thread(target=_mqtt_loop, daemon=True).start()
 
 # ==========================
@@ -82,9 +91,11 @@ class RegisterIn(BaseModel):
     email: Optional[str] = None
     password: str = Field(min_length=4, max_length=200)
 
+
 class LoginIn(BaseModel):
     username: str
     password: str
+
 
 class SessionUser(BaseModel):
     id: str
@@ -101,14 +112,17 @@ def read_users() -> List[dict]:
     except Exception:
         return []
 
+
 def write_users(users: List[dict]) -> None:
     USERS_FILE.write_text(json.dumps(users, indent=2, ensure_ascii=False), encoding="utf-8")
+
 
 def find_user_by_username(username: str) -> Optional[dict]:
     for u in read_users():
         if u["username"].lower() == username.lower():
             return u
     return None
+
 
 def create_user(username: str, email: Optional[str], password: str) -> dict:
     users = read_users()
@@ -153,6 +167,7 @@ def get_session_user(request: Request) -> Optional[SessionUser]:
     except Exception:
         return None
 
+
 def require_auth(request: Request) -> SessionUser:
     su = get_session_user(request)
     if not su:
@@ -180,6 +195,7 @@ def auth_register(payload: RegisterIn, request: Request):
         print("[auth/register] error:", e)
         raise HTTPException(status_code=500, detail="Erreur serveur")
 
+
 @api.post("/auth/login")
 def auth_login(payload: LoginIn, request: Request):
     user = find_user_by_username(payload.username)
@@ -194,10 +210,12 @@ def auth_login(payload: LoginIn, request: Request):
     request.session["user"] = session_user.model_dump()
     return {"success": True, "user": session_user.model_dump()}
 
+
 @api.post("/auth/logout")
 def auth_logout(request: Request):
-  request.session.clear()
-  return {"success": True}
+    request.session.clear()
+    return {"success": True}
+
 
 @api.get("/auth/me")
 def auth_me(request: Request):
@@ -214,6 +232,21 @@ def iot_latest(user: SessionUser = Depends(require_auth)):
         "subTopic": MQTT_SUB_TOPIC,
         "last": last_message,
     }
+
+
+class PublishMessage(BaseModel):
+    message: str
+
+
+@api.post("/iot/send")
+def iot_send(payload: PublishMessage, user: SessionUser = Depends(require_auth)):
+    if not mqtt_connected:
+        raise HTTPException(status_code=500, detail="MQTT non connecté")
+
+    mqtt_client.publish(MQTT_PUB_TOPIC, payload.message)
+    print(f"[mqtt] publish → {MQTT_PUB_TOPIC}: {payload.message}")
+
+    return {"success": True, "sent": payload.message, "topic": MQTT_PUB_TOPIC}
 
 # ==========================
 # Healthcheck

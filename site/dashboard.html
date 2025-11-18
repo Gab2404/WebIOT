@@ -1,0 +1,26 @@
+<form id="mqttForm">
+    <input type="text" id="mqttMessage" placeholder="Message pour la LED">
+    <button type="submit">Envoyer</button>
+</form>
+
+<div id="status"></div>
+
+<script>
+document.getElementById("mqttForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const message = document.getElementById("mqttMessage").value;
+
+    const res = await fetch("/api/iot/send", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ message })
+    });
+
+    const data = await res.json();
+    console.log("Réponse API:", data);
+    document.getElementById("status").innerText = "Message envoyé : " + (data.sent ?? "ERREUR: clé manquante");
+});
+</script>
