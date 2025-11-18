@@ -1,14 +1,14 @@
 <!doctype html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Connexion</title>
-  <link rel="stylesheet" href="assets/style.css">
+  <meta charset="utf-8" />
+  <title>IOT - Connexion</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="assets/style.css" />
 </head>
 <body>
   <header class="site-header">
-    <div class="logo">IoT</div>
+    <div class="logo">IOT</div>
     <nav>
       <a href="index.html">Accueil</a>
       <a href="register.html">S’inscrire</a>
@@ -18,22 +18,22 @@
 
   <main>
     <section class="hero">
-      <div class="particles" id="particles"></div>
       <div class="hero-content">
         <h2>Connexion</h2>
-        <form id="login-form" class="section-contact" style="max-width:400px; margin:auto;">
+
+        <form id="login-form" class="section-contact small-form">
           <div class="form-group">
             <label>Nom d’utilisateur</label>
-            <input type="text" name="username" placeholder="Votre nom d’utilisateur" required>
+            <input type="text" name="username" required />
           </div>
           <div class="form-group">
             <label>Mot de passe</label>
-            <input type="password" name="password" placeholder="Votre mot de passe" required>
+            <input type="password" name="password" required />
           </div>
           <button type="submit" class="submit-btn">Se connecter</button>
 
-          <p style="text-align:center; margin-top:20px;">Pas encore de compte ?</p>
-          <button type="button" id="signup-btn" class="submit-btn" style="background:rgba(255,255,255,0.15);border:2px solid rgba(255,255,255,0.3);">
+          <p style="text-align:center;margin-top:12px;">Pas de compte ?</p>
+          <button type="button" id="signup-btn" class="submit-btn secondary">
             S’inscrire
           </button>
 
@@ -44,7 +44,7 @@
   </main>
 
   <footer>
-    <p>© <span id="year"></span> MonSite — Tous droits réservés</p>
+    <p>© <span id="year"></span> IOT — Tous droits réservés</p>
   </footer>
 
   <script src="assets/main.js"></script>

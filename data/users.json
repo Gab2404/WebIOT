@@ -1,9 +1,9 @@
 [
   {
-    "id": "mhw17d7isvkaf3",
+    "id": "19a96446c1d-4f93fd",
     "username": "Inoco",
-    "email": "coucou@gmail.com",
-    "passwordHash": "$2a$10$fbxjtWxOhhOQYxvacClU8.o/xVM8YvIsto4JDMXEQfSZ0HBQ1dgtu",
+    "email": "gabriel@gmail.com",
+    "passwordHash": "$pbkdf2-sha256$29000$2jsnhDBGSInxPudcSylFqA$.QP1p8aaI1CuruDagfKklpe0P6l6ajKptemzThQL7Qw",
     "role": "user"
   }
 ]
