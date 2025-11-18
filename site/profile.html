@@ -11,27 +11,33 @@
     <div class="logo">IOT</div>
     <nav>
       <a href="index.html">Accueil</a>
-      <a href="login.html">Connexion</a>
-      <a href="register.html">S’inscrire</a>
+      <a href="login.html" class="login-btn-header" id="login-link">Connexion</a>
+      <a href="register.html" class="login-btn-header" id="register-link">S’inscrire</a>
     </nav>
   </header>
 
   <main>
-    <section class="hero">
-      <div class="hero-content" id="profile-info">
-        <h2>Chargement du profil...</h2>
+    <section class="section">
+      <div class="section-inner glass-card" style="max-width:500px;margin:40px auto;">
+        <div id="profile-info">
+          Chargement du profil...
+        </div>
       </div>
+    </section>
 
-      <div class="hero-content">
-        <button id="btn-fetch-mqtt" class="submit-btn"
-                style="margin-top:24px;">Récupérer les données IoT</button>
-        <pre id="mqtt-output" class="mqtt-output"></pre>
+    <section class="section">
+      <div class="section-inner glass-card" style="max-width:700px;margin:0 auto;">
+        <h2>Données IoT</h2>
+        <button id="btn-fetch-mqtt" class="btn-secondary" style="margin-top:10px;">
+          Récupérer les dernières données
+        </button>
+        <pre id="mqtt-output" style="margin-top:14px;white-space:pre-wrap;"></pre>
       </div>
     </section>
   </main>
 
-  <footer>
-    <p>© <span id="year"></span> IOT — Tous droits réservés</p>
+  <footer class="site-footer">
+    <p>© <span id="year"></span> IOT — Projet Web & IOT</p>
   </footer>
 
   <script src="assets/main.js"></script>

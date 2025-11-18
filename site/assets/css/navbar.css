@@ -1,0 +1,17 @@
+/* NAVBAR */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px 40px;
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(10px);
+}
+.navbar a {
+    color: #cfd6e1;
+    text-decoration: none;
+    margin-left: 20px;
+    transition: 0.2s;
+}
+.navbar a:hover {
+    color: white;
+}
