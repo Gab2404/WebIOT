@@ -1,26 +1,66 @@
-<form id="mqttForm">
-    <input type="text" id="mqttMessage" placeholder="Message pour la LED">
-    <button type="submit">Envoyer</button>
-</form>
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <title>IOT - Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="assets/css/base.css" />
+  <link rel="stylesheet" href="assets/css/dashboard.css" />
+</head>
+<body>
+  <!-- Topbar -->
+  <header class="site-header">
+    <div class="logo">IOT</div>
+    <nav>
+        <a href="index.html">Accueil</a>
+        <a href="profile.html">Profil</a> <!-- seulement si nécessaire -->
+        <!-- Suppression des boutons connexion et s'inscrire -->
+    </nav>
+  </header>
 
-<div id="status"></div>
+  <!-- Main content -->
+  <main>
+    <section class="hero">
+      <div class="hero-content">
+        <h1>Dashboard IoT</h1>
+        <p>Envoyez des commandes à vos appareils connectés.</p>
 
-<script>
-document.getElementById("mqttForm").addEventListener("submit", async (e) => {
-    e.preventDefault();
+        <!-- Formulaire MQTT -->
+        <form id="mqttForm">
+            <input type="text" id="mqttMessage" placeholder="Message pour la LED">
+            <button type="submit" class="submit-btn">Envoyer</button>
+        </form>
 
-    const message = document.getElementById("mqttMessage").value;
+        <div id="status" style="margin-top: 16px;"></div>
+      </div>
+    </section>
+  </main>
 
-    const res = await fetch("/api/iot/send", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ message })
+  <!-- Footer -->
+  <footer>
+    <p>© <span id="year"></span> IOT — Tous droits réservés</p>
+  </footer>
+
+  <!-- Scripts -->
+  <script>
+    document.getElementById("mqttForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const message = document.getElementById("mqttMessage").value;
+
+        const res = await fetch("/api/iot/send", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ message })
+        });
+
+        const data = await res.json();
+        console.log("Réponse API:", data);
+        document.getElementById("status").innerText = "Message envoyé : " + (data.sent ?? "ERREUR: clé manquante");
     });
 
-    const data = await res.json();
-    console.log("Réponse API:", data);
-    document.getElementById("status").innerText = "Message envoyé : " + (data.sent ?? "ERREUR: clé manquante");
-});
-</script>
+    // Mettre à jour l'année automatiquement
+    document.getElementById("year").innerText = new Date().getFullYear();
+  </script>
+</body>
+</html>

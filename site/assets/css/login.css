@@ -1,0 +1,12 @@
+/* ----- login.css : styles spécifiques à la page de connexion ----- */
+
+.hero h2 {
+  font-size: 2.2rem;
+  margin-bottom: 24px;
+}
+
+#login-status {
+  margin-top: 14px;
+  text-align: center;
+  font-weight: 600;
+}

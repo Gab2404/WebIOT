@@ -1,0 +1,13 @@
+/* ----- register.css : styles spécifiques à la page d'inscription ----- */
+
+.hero h2 {
+  font-size: 2.2rem;
+  margin-bottom: 24px;
+}
+
+#register-status {
+  margin-top: 14px;
+  text-align: center;
+  font-weight: 600;
+}
+

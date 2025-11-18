@@ -22,14 +22,16 @@ async function checkUserStatus() {
 
     const loginBtn = document.querySelector('a[href="login.html"]');
     const registerBtn = document.querySelector('a[href="register.html"]');
+    const nav = document.querySelector("nav");
+
+    if (!nav) return;
 
     if (user) {
+      // Cacher les boutons de connexion / inscription
       if (loginBtn) loginBtn.style.display = "none";
       if (registerBtn) registerBtn.style.display = "none";
 
-      const nav = document.querySelector("nav");
-      if (!nav) return;
-
+      // Bouton Profil
       if (!document.querySelector("#profile-btn")) {
         const profile = document.createElement("a");
         profile.textContent = "Profil";
@@ -39,6 +41,17 @@ async function checkUserStatus() {
         nav.appendChild(profile);
       }
 
+      // Bouton Dashboard
+      if (!document.querySelector("#dashboard-btn")) {
+        const dashboard = document.createElement("a");
+        dashboard.textContent = "Dashboard";
+        dashboard.href = "dashboard.html";
+        dashboard.id = "dashboard-btn";
+        dashboard.classList.add("login-btn-header");
+        nav.appendChild(dashboard);
+      }
+
+      // Bouton Déconnexion
       if (!document.querySelector("#logout-btn")) {
         const logout = document.createElement("a");
         logout.textContent = "Déconnexion";
@@ -52,15 +65,18 @@ async function checkUserStatus() {
         nav.appendChild(logout);
       }
     } else {
+      // Utilisateur non connecté
       if (loginBtn) loginBtn.style.display = "";
       if (registerBtn) registerBtn.style.display = "";
-      document.querySelector("#logout-btn")?.remove();
       document.querySelector("#profile-btn")?.remove();
+      document.querySelector("#dashboard-btn")?.remove();
+      document.querySelector("#logout-btn")?.remove();
     }
   } catch (e) {
     console.error("Erreur statut utilisateur:", e);
   }
 }
+
 checkUserStatus();
 
 // ==========================

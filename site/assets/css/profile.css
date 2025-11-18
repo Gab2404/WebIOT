@@ -1,0 +1,17 @@
+/* ----- profile.css : styles spécifiques au profil ----- */
+
+#profile-info {
+  padding: 30px;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 30px;
+}
+
+#btn-fetch-mqtt {
+  margin-top: 20px;
+}
+
+#mqtt-output {
+  margin-top: 25px;
+}
