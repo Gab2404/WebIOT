@@ -77,23 +77,29 @@ function displayMessages(messages) {
     
     // Parser le payload
     if (typeof msg.payload === "object" && msg.payload !== null) {
+      // Message venant du web (envoyé par un utilisateur)
       if (msg.payload.from === "web") {
         username = msg.payload.user || "Utilisateur";
         content = msg.payload.msg || JSON.stringify(msg.payload);
         messageDiv.classList.add("chat-message-web");
-      } else {
+      } 
+      // Message venant d'un device (ESP32, MQTTX, etc.)
+      else {
         username = msg.payload.from || "ESP32";
         content = msg.payload.msg || msg.payload.message || JSON.stringify(msg.payload);
         messageDiv.classList.add("chat-message-device");
       }
-    } else {
+    } 
+    // Message texte brut (pas de JSON)
+    else {
       content = msg.raw || String(msg.payload);
+      username = "Device";
       messageDiv.classList.add("chat-message-device");
     }
     
     messageDiv.innerHTML = `
       <div class="chat-message-header">
-        <strong>${username}</strong>
+        <strong>${escapeHtml(username)}</strong>
         <span class="chat-message-time">${timestamp}</span>
       </div>
       <div class="chat-message-content">${escapeHtml(content)}</div>
