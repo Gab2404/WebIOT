@@ -12,5 +12,12 @@
     "email": "test@gmail.com",
     "passwordHash": "$pbkdf2-sha256$29000$FIJQCmGMEaI0ZgzBOMf4fw$ljMW1boJs4Gk.WkcAOQkyE3CHa3haW0MAr1HzRvLATU",
     "role": "user"
+  },
+  {
+    "id": "19ada19836e-c18ae5",
+    "username": "test",
+    "email": "test@gmail.com",
+    "passwordHash": "$pbkdf2-sha256$29000$OAfgHOPcm7M2xthby9lbCw$2NyOmSMbr/r6yBgPiPTBKftZ4rZAUSWaVv91thmkQ0g",
+    "role": "user"
   }
 ]

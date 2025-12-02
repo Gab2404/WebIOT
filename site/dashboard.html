@@ -6,8 +6,43 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" href="assets/css/base.css" />
   <link rel="stylesheet" href="assets/css/dashboard.css?v=2" />
+  <style>
+    /* Toast notification */
+    .toast {
+      position: fixed;
+      top: 100px;
+      right: 30px;
+      background: linear-gradient(135deg, #00e0ff, #7b61ff);
+      color: #0a0e27;
+      padding: 16px 24px;
+      border-radius: 12px;
+      font-weight: 600;
+      box-shadow: 0 8px 32px rgba(0, 224, 255, 0.4);
+      transform: translateX(400px);
+      opacity: 0;
+      transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      z-index: 1000;
+      pointer-events: none;
+    }
+    
+    .toast.show {
+      transform: translateX(0);
+      opacity: 1;
+    }
+
+    .toast::before {
+      content: '✓';
+      display: inline-block;
+      margin-right: 8px;
+      font-size: 1.2em;
+      font-weight: bold;
+    }
+  </style>
 </head>
 <body>
+  <!-- Toast notification -->
+  <div id="toast" class="toast">Message bien envoyé</div>
+
   <!-- Topbar -->
   <header class="site-header">
     <div class="logo">IOT</div>
@@ -21,15 +56,13 @@
     <section class="hero">
       <div class="hero-content">
         <h1>Dashboard IoT</h1>
-        <p>Envoyez des commandes à vos appareils connectés.</p>
+        <p>Envoyez des messages à la matrice LED.</p>
 
         <!-- Formulaire MQTT -->
         <form id="mqttForm">
             <input type="text" id="mqttMessage" placeholder="Message pour la LED">
             <button type="submit" class="submit-btn">Envoyer</button>
         </form>
-
-        <div id="status" style="margin-top: 16px;"></div>
       </div>
     </section>
   </main>
@@ -42,6 +75,15 @@
   <!-- Scripts -->
   <script src="assets/main.js"></script>
   <script>
+    function showToast() {
+      const toast = document.getElementById("toast");
+      toast.classList.add("show");
+      
+      setTimeout(() => {
+        toast.classList.remove("show");
+      }, 3000);
+    }
+
     document.getElementById("mqttForm").addEventListener("submit", async (e) => {
         e.preventDefault();
 
@@ -55,7 +97,12 @@
 
         const data = await res.json();
         console.log("Réponse API:", data);
-        document.getElementById("status").innerText = "Message envoyé : " + (data.sent ?? "ERREUR: clé manquante");
+        
+        // Afficher le toast
+        showToast();
+        
+        // Vider le champ input
+        document.getElementById("mqttMessage").value = "";
     });
   </script>
 </body>
