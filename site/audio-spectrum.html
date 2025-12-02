@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <title>IOT - Spectre Audio</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="assets/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="logo">IOT</div>
+    <nav>
+      <a href="index.html">Accueil</a>
+      <a href="profile.html">Profil</a>
+      <a href="audio-spectrum.html" class="login-btn-header">Spectre Audio</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-content" style="max-width: 900px;">
+        <h1>🎵 Spectre Audio ESP32</h1>
+        <p>Visualisation en temps réel du spectre audio du microphone</p>
+        
+        <div style="margin-top: 24px;">
+          <button id="btn-start-spectrum" class="submit-btn">Démarrer la visualisation</button>
+          <button id="btn-stop-spectrum" class="submit-btn secondary" style="margin-left: 8px;" disabled>Arrêter</button>
+        </div>
+
+        <div id="connection-status" style="margin-top: 16px; font-size: 0.9rem;">
+          <span style="color: #ff7b7b;">⚫ Déconnecté</span>
+        </div>
+
+        <canvas id="spectrum-canvas" style="
+          margin-top: 24px;
+          width: 100%;
+          max-width: 800px;
+          height: 400px;
+          border-radius: 12px;
+          border: 1px solid rgba(255, 255, 255, 0.12);
+          background: rgba(10, 20, 40, 0.9);
+        "></canvas>
+
+        <div id="audio-info" style="
+          margin-top: 16px;
+          padding: 16px;
+          border-radius: 10px;
+          background: rgba(10, 20, 40, 0.9);
+          border: 1px solid rgba(255, 255, 255, 0.12);
+          max-width: 800px;
+          text-align: left;
+        ">
+          <h3 style="margin-bottom: 8px;">Informations audio</h3>
+          <p><strong>Topic MQTT:</strong> <span id="mqtt-topic">-</span></p>
+          <p><strong>Dernier message:</strong> <span id="last-update">Aucun</span></p>
+          <p><strong>Fréquence dominante:</strong> <span id="dominant-freq">-</span></p>
+          <p><strong>Niveau moyen:</strong> <span id="avg-level">-</span></p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>© <span id="year"></span> IOT — Tous droits réservés</p>
+  </footer>
+
+  <script src="assets/main.js"></script>
+  <script src="assets/audio-spectrum.js"></script>
+</body>
+</html>

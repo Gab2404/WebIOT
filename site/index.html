@@ -2,88 +2,76 @@
 <html lang="fr">
 <head>
   <meta charset="utf-8" />
-  <title>IOT - Messagerie & Tableau de bord</title>
+  <title>IOT - Accueil</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="assets/style.css" />
+  <link rel="stylesheet" href="assets/css/global.css" />
+  <link rel="stylesheet" href="assets/css/navbar.css" />
+  <link rel="stylesheet" href="assets/css/chat.css" />
 </head>
 <body>
-  <header class="site-header glass-blur">
+  <header class="site-header">
     <div class="logo">IOT</div>
     <nav>
-      <a href="index.html">Accueil</a>
+      <a href="#about">À propos</a>
+      <a href="audio-spectrum.html">Spectre Audio</a>
       <a href="login.html" class="login-btn-header">Connexion</a>
-      <a href="register.html" class="login-btn-header">S’inscrire</a>
+      <a href="register.html" class="login-btn-header">S'inscrire</a>
     </nav>
   </header>
 
   <main>
-    <!-- SECTION PUBLIQUE (non connecté) -->
-    <section id="public-hero" class="hero public-section">
-      <div class="hero-inner glass-card">
-        <h1 class="hero-title">Plateforme IOT</h1>
-        <p class="hero-subtitle">
-          Gérez vos objets connectés, consultez leurs données et discutez avec eux
-          via une messagerie en temps réel.
-        </p>
-        <div class="hero-actions">
-          <button id="demo-btn" class="btn-primary">Découvrir la plateforme</button>
-          <a href="register.html" class="btn-secondary">Créer un compte</a>
-        </div>
+    <section class="hero">
+      <div class="hero-content">
+        <h1>Plateforme IOT</h1>
+        <p>Gère et surveille tes objets connectés depuis une interface web.</p>
+        <button id="demo-btn" class="submit-btn">Découvrir</button>
       </div>
     </section>
 
-    <section id="public-about" class="section public-section">
-      <div class="section-inner glass-card">
-        <h2>À propos</h2>
-        <p>
-          Ce site est la base de ton projet IOT : gestion des comptes, profil utilisateur,
-          intégration MQTT, et maintenant une messagerie entre ton objet et l’interface web.
-        </p>
+    <!-- Section Messagerie MQTT (visible uniquement si connecté) -->
+    <section id="mqtt-chat-section" class="section-chat" style="display: none;">
+      <h2>💬 Messagerie IoT</h2>
+      <p style="opacity: 0.8; margin-bottom: 16px;">
+        Envoyez des messages à vos appareils connectés et à vos collègues
+      </p>
+
+      <div id="mqtt-status" style="margin-bottom: 16px; font-size: 0.9rem;">
+        <span style="color: #ff7b7b;">⚫ Déconnecté</span>
+      </div>
+
+      <div class="chat-container">
+        <div id="chat-messages" class="chat-messages">
+          <p style="opacity: 0.6; text-align: center;">Chargement des messages...</p>
+        </div>
+
+        <form id="chat-form" class="chat-form">
+          <input 
+            type="text" 
+            id="chat-input" 
+            name="message" 
+            placeholder="Tapez votre message..."
+            maxlength="500"
+            required 
+          />
+          <button type="submit" class="submit-btn">Envoyer</button>
+        </form>
       </div>
     </section>
 
-    <!-- SECTION CHAT (uniquement quand connecté) -->
-    <section id="chat-section" class="section" style="display:none;">
-      <div class="chat-layout">
-        <div class="chat-panel">
-          <div class="chat-header">
-            <div>
-              <h2>Messagerie avec l’objet connecté</h2>
-              <p class="chat-subtitle">
-                Messages de l’objet à gauche, tes messages à droite. Envoie-lui des commandes
-                ou du texte comme dans une messagerie classique.
-              </p>
-            </div>
-            <span id="chat-status" class="badge badge-status">MQTT : inconnu</span>
-          </div>
-
-          <!-- zone des messages -->
-          <div id="chat-messages" class="chat-messages-terminal">
-            <p class="chat-empty">Aucun message pour l’instant. Envoie un premier message à l’objet.</p>
-          </div>
-
-          <!-- barre d’envoi en bas -->
-          <form id="chat-form" class="chat-input-row">
-            <div class="chat-input-inner">
-              <input
-                id="chat-input"
-                type="text"
-                placeholder="Votre message..."
-                autocomplete="off"
-                required
-              />
-            </div>
-            <button type="submit" class="submit-btn chat-send-btn">Envoyer</button>
-          </form>
-        </div>
-      </div>
+    <section id="about" class="section-about">
+      <h2>À propos</h2>
+      <p>
+        Ce site est une base pour ton projet IOT : comptes utilisateurs, profil,
+        messagerie MQTT, et intégration des capteurs et actionneurs.
+      </p>
     </section>
   </main>
 
-  <footer class="site-footer">
-    <p>© <span id="year"></span> IOT — Projet Web & IOT</p>
+  <footer>
+    <p>© <span id="year"></span> IOT — Tous droits réservés</p>
   </footer>
 
   <script src="assets/main.js"></script>
+  <script src="assets/mqtt-chat.js"></script>
 </body>
 </html>
