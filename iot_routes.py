@@ -48,7 +48,7 @@ def iot_send(payload: ChatSendIn, user: SessionUser = Depends(require_auth)):
     state.add_chat(entry)
 
     # 2) Publier sur MQTT UNIQUEMENT le texte brut (pas de JSON)
-    #    Comme ça, l'ESP32/matrice LED reçoit directement "Ton père" au lieu de tout le JSON
+    #    Comme ça, l'ESP32/matrice LED reçoit directement le message au lieu de tout le JSON
     try:
         c = mqtt.Client()
         c.connect(state.MQTT_HOST, state.MQTT_PORT, 30)
@@ -56,7 +56,7 @@ def iot_send(payload: ChatSendIn, user: SessionUser = Depends(require_auth)):
         # On mémorise ce qu'on envoie pour pouvoir ignorer l'écho dans _on_message
         state.last_sent_raw_from_web = msg
 
-        # IMPORTANT : On envoie JUSTE le message, pas de JSON
+        # IMPORTANT : On envoie JUSTE le message texte brut, PAS de JSON
         c.publish(state.MQTT_PUB_TOPIC, msg)
         c.disconnect()
     except Exception as e:

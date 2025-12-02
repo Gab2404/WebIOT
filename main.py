@@ -36,6 +36,7 @@ MQTT_PUB_TOPIC = os.environ.get("MQTT_PUB_TOPIC", "iot/demo")
 last_message: Optional[dict] = None
 mqtt_connected: bool = False
 message_history = deque(maxlen=100)  # Historique des 100 derniers messages
+last_sent_raw_from_web: Optional[str] = None  # Pour ignorer l'écho
 
 def _on_connect(client, userdata, flags, rc):
     global mqtt_connected
@@ -49,8 +50,15 @@ def _on_connect(client, userdata, flags, rc):
         print("[mqtt] connect error rc=", rc)
 
 def _on_message(client, userdata, msg):
-    global last_message
+    global last_message, last_sent_raw_from_web
     raw = msg.payload.decode(errors="ignore")
+    
+    # IMPORTANT : Ignorer l'écho de notre propre message
+    if last_sent_raw_from_web is not None and raw == last_sent_raw_from_web:
+        print(f"[mqtt] Ignoring echo: {raw}")
+        last_sent_raw_from_web = None  # Réinitialiser
+        return  # Ne pas ajouter à l'historique
+    
     try:
         payload = json.loads(raw)
     except Exception:
@@ -227,27 +235,33 @@ def iot_latest(user: SessionUser = Depends(require_auth)):
 
 @api.post("/iot/send")
 def iot_send(payload: ChatSendIn, user: SessionUser = Depends(require_auth)):
+    global last_sent_raw_from_web
+    
     msg = payload.message.strip()
     if not msg:
         raise HTTPException(status_code=400, detail="Message vide.")
 
     ts = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
 
-    # On envoie un JSON sur MQTT, avec un marqueur "from": "web"
-    payload_mqtt = json.dumps(
-        {
-            "from": "web",
-            "user": user.username,
-            "msg": msg,
-            "timestamp": ts,
-        },
-        ensure_ascii=False,
-    )
+    # Ajouter dans l'historique avec métadonnées complètes
+    message_data = {
+        "topic": MQTT_PUB_TOPIC,
+        "payload": {"from": "web", "user": user.username, "msg": msg},
+        "raw": msg,
+        "timestamp": ts,
+    }
+    message_history.append(message_data)
 
+    # IMPORTANT : Publier sur MQTT UNIQUEMENT le texte brut (pas de JSON)
+    # Comme ça la matrice LED reçoit juste "Salut" au lieu du JSON complet
     try:
         c = mqtt.Client()
         c.connect(MQTT_HOST, MQTT_PORT, 30)
-        c.publish(MQTT_PUB_TOPIC, payload_mqtt)
+        
+        # Mémoriser le message pour ignorer l'écho dans _on_message
+        last_sent_raw_from_web = msg
+        
+        c.publish(MQTT_PUB_TOPIC, msg)  # ← ICI : juste msg, pas de JSON
         c.disconnect()
     except Exception as e:
         print("[MQTT SEND] error:", e)
