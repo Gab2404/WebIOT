@@ -258,7 +258,7 @@ def iot_send(payload: ChatSendIn, user: SessionUser = Depends(require_auth)):
     if not mqtt_connected or mqtt_client is None:
         raise HTTPException(status_code=503, detail="MQTT non connecté")
 
-    # Publier sur MQTT avec le client existant (pas de nouvelle connexion)
+    # Publier sur MQTT UNIQUEMENT le texte brut (simple)
     try:
         # Mémoriser le message pour ignorer l'écho dans _on_message
         last_sent_raw_from_web = msg
