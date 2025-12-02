@@ -156,3 +156,4 @@ Un compte existe déjà pour les tests :
 
 - **Username** : `Inoco`
 - **Password** : Voir le hash dans `data/users.json`
+ 
