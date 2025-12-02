@@ -23,11 +23,12 @@ def iot_latest(user: SessionUser = Depends(require_auth)):
 @router.post("/send")
 def iot_send(payload: ChatSendIn, user: SessionUser = Depends(require_auth)):
     """
-    Envoie un message depuis le site vers MQTT ET
-    l’ajoute dans l’historique du chat comme message "user".
-
-    Sur MQTT, on n'envoie QUE le texte du message (payload brut),
-    pour que MQTTX affiche directement "fff" plutôt qu'un JSON complet.
+    Envoie un message depuis le site vers MQTT.
+    
+    Sur MQTT, on envoie SEULEMENT le texte brut pour que la matrice LED
+    puisse l'afficher directement sans avoir à parser du JSON.
+    
+    Dans l'historique du chat côté web, on stocke les métadonnées complètes.
     """
     msg = payload.message.strip()
     if not msg:
@@ -35,7 +36,7 @@ def iot_send(payload: ChatSendIn, user: SessionUser = Depends(require_auth)):
 
     ts = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
 
-    # 1) Ajouter le message de l’utilisateur dans l’historique du chat
+    # 1) Ajouter le message de l'utilisateur dans l'historique du chat avec métadonnées
     entry = {
         "from": "user",
         "username": user.username,
@@ -46,7 +47,8 @@ def iot_send(payload: ChatSendIn, user: SessionUser = Depends(require_auth)):
     }
     state.add_chat(entry)
 
-    # 2) Publier sur MQTT UNIQUEMENT le message brut
+    # 2) Publier sur MQTT UNIQUEMENT le texte brut (pas de JSON)
+    #    Comme ça, l'ESP32/matrice LED reçoit directement "Ton père" au lieu de tout le JSON
     try:
         c = mqtt.Client()
         c.connect(state.MQTT_HOST, state.MQTT_PORT, 30)
@@ -54,9 +56,11 @@ def iot_send(payload: ChatSendIn, user: SessionUser = Depends(require_auth)):
         # On mémorise ce qu'on envoie pour pouvoir ignorer l'écho dans _on_message
         state.last_sent_raw_from_web = msg
 
+        # IMPORTANT : On envoie JUSTE le message, pas de JSON
         c.publish(state.MQTT_PUB_TOPIC, msg)
         c.disconnect()
     except Exception as e:
         print("[MQTT SEND] error:", e)
+        raise HTTPException(status_code=500, detail="Erreur d'envoi MQTT")
 
     return {"success": True, "sent": msg}

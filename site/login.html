@@ -4,44 +4,50 @@
   <meta charset="utf-8" />
   <title>IOT - Connexion</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="assets/style.css" />
+  <link rel="stylesheet" href="assets/css/global.css" />
+  <link rel="stylesheet" href="assets/css/navbar.css" />
+  <link rel="stylesheet" href="assets/css/login.css" />
 </head>
 <body>
   <header class="site-header">
     <div class="logo">IOT</div>
     <nav>
       <a href="index.html">Accueil</a>
-      <a href="register.html" class="login-btn-header">S’inscrire</a>
+      <a href="audio-spectrum.html">Spectre Audio</a>
+      <a href="register.html">S'inscrire</a>
+      <a href="login.html" class="login-btn-header">Connexion</a>
     </nav>
   </header>
 
   <main>
-    <section class="section">
-      <div class="section-inner glass-card" style="max-width:420px;margin:40px auto;">
-        <h2>Se connecter</h2>
-        <form id="login-form" class="form" style="margin-top:16px;">
+    <section class="hero">
+      <div class="hero-content">
+        <h2>Connexion</h2>
+
+        <form id="login-form" class="section-contact small-form">
           <div class="form-group">
-            <label>Nom d’utilisateur</label>
+            <label>Nom d'utilisateur</label>
             <input type="text" name="username" required />
           </div>
           <div class="form-group">
             <label>Mot de passe</label>
             <input type="password" name="password" required />
           </div>
-          <button type="submit" class="btn-primary">Connexion</button>
-        </form>
-        <p id="login-status" class="form-status"></p>
+          <button type="submit" class="submit-btn">Se connecter</button>
 
-        <p style="margin-top:16px;font-size:0.9rem;">
-          Pas de compte ?
-          <a href="register.html">Créer un compte</a>
-        </p>
+          <p style="text-align:center;margin-top:12px;">Pas de compte ?</p>
+          <button type="button" id="signup-btn" class="submit-btn secondary">
+            S'inscrire
+          </button>
+
+          <p id="login-status"></p>
+        </form>
       </div>
     </section>
   </main>
 
-  <footer class="site-footer">
-    <p>© <span id="year"></span> IOT — Projet Web & IOT</p>
+  <footer>
+    <p>© <span id="year"></span> IOT — Tous droits réservés</p>
   </footer>
 
   <script src="assets/main.js"></script>

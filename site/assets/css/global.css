@@ -1,8 +1,253 @@
-/* GLOBAL CSS — utilisé sur TOUTES les pages */
+/* ==========================
+   GLOBAL CSS — Base pour toutes les pages
+   ========================== */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
 body {
-    margin: 0;
-    padding: 0;
-    font-family: "Inter", sans-serif;
-    background: #0d1117;
-    color: white;
+  background: #050816;
+  color: #f5f5f5;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1;
+}
+
+/* ==========================
+   Header / Navigation
+   ========================== */
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 32px;
+  background: rgba(5, 8, 22, 0.95);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.logo {
+  font-weight: 700;
+  font-size: 1.4rem;
+  letter-spacing: 2px;
+  color: #00e0ff;
+  text-shadow: 0 0 8px rgba(0, 224, 255, 0.7);
+}
+
+nav a {
+  color: #f5f5f5;
+  text-decoration: none;
+  margin-left: 16px;
+  font-size: 0.95rem;
+}
+
+nav a:hover {
+  text-decoration: underline;
+}
+
+.login-btn-header {
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1px solid #00e0ff;
+  margin-left: 10px;
+}
+
+/* ==========================
+   Sections
+   ========================== */
+
+.hero {
+  padding: 60px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  align-items: center;
+  text-align: center;
+}
+
+.hero-content {
+  max-width: 480px;
+}
+
+.hero h1 {
+  font-size: 2.4rem;
+  margin-bottom: 10px;
+}
+
+.hero p {
+  opacity: 0.8;
+}
+
+.section-about,
+.section-contact {
+  padding: 40px 20px;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.section-about h2,
+.section-contact h2 {
+  margin-bottom: 16px;
+  font-size: 1.6rem;
+}
+
+/* ==========================
+   Formulaires
+   ========================== */
+
+.form-group {
+  margin-bottom: 14px;
+  text-align: left;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+
+input,
+textarea {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: transparent;
+  color: #fff;
+}
+
+input:focus,
+textarea:focus {
+  outline: none;
+  border-color: #00e0ff;
+}
+
+textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+.small-form {
+  max-width: 380px;
+  margin: 0 auto;
+}
+
+/* ==========================
+   Boutons
+   ========================== */
+
+.submit-btn,
+.btn-primary {
+  margin-top: 6px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: none;
+  background: linear-gradient(90deg, #00e0ff, #7b61ff);
+  color: #050816;
+  font-weight: 600;
+  cursor: pointer;
+  transition: filter 0.2s;
+}
+
+.submit-btn:hover,
+.btn-primary:hover {
+  filter: brightness(1.1);
+}
+
+.submit-btn.secondary {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  color: #fff;
+}
+
+.submit-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ==========================
+   Messages de statut
+   ========================== */
+
+#login-status,
+#register-status,
+#form-status,
+.form-status {
+  margin-top: 8px;
+  font-size: 0.9rem;
+}
+
+/* ==========================
+   Zones d'affichage
+   ========================== */
+
+#mqtt-output,
+.mqtt-output {
+  margin-top: 12px;
+  text-align: left;
+  max-width: 480px;
+  padding: 10px;
+  border-radius: 10px;
+  background: rgba(10, 20, 40, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  font-size: 0.9rem;
+  white-space: pre-wrap;
+}
+
+/* ==========================
+   Cartes / Containers
+   ========================== */
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.section {
+  padding: 40px 20px;
+}
+
+.section-inner {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+/* ==========================
+   Footer
+   ========================== */
+
+footer,
+.site-footer {
+  padding: 16px;
+  text-align: center;
+  font-size: 0.85rem;
+  opacity: 0.8;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* ==========================
+   Utilitaires
+   ========================== */
+
+a {
+  color: #00e0ff;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
 }
