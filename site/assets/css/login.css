@@ -1,55 +1,38 @@
-<!doctype html>
-<html lang="fr">
-<head>
-  <meta charset="utf-8" />
-  <title>IOT - Connexion</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="assets/css/global.css" />
-  <link rel="stylesheet" href="assets/css/navbar.css" />
-  <link rel="stylesheet" href="assets/css/login.css" />
-</head>
-<body>
-  <header class="site-header">
-    <div class="logo">IOT</div>
-    <nav>
-      <a href="index.html">Accueil</a>
-      <a href="audio-spectrum.html">Spectre Audio</a>
-      <a href="register.html">S'inscrire</a>
-      <a href="login.html" class="login-btn-header">Connexion</a>
-    </nav>
-  </header>
+/* PAGE LOGIN */
+.login-container {
+    width: 400px;
+    margin: 80px auto;
+    padding: 30px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 10px;
+}
 
-  <main>
-    <section class="hero">
-      <div class="hero-content">
-        <h2>Connexion</h2>
+.login-form {
+    margin-top: 20px;
+}
 
-        <form id="login-form" class="section-contact small-form">
-          <div class="form-group">
-            <label>Nom d'utilisateur</label>
-            <input type="text" name="username" required />
-          </div>
-          <div class="form-group">
-            <label>Mot de passe</label>
-            <input type="password" name="password" required />
-          </div>
-          <button type="submit" class="submit-btn">Se connecter</button>
+.login-form input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    color: white;
+}
 
-          <p style="text-align:center;margin-top:12px;">Pas de compte ?</p>
-          <button type="button" id="signup-btn" class="submit-btn secondary">
-            S'inscrire
-          </button>
+.login-form button {
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(90deg, #00e0ff, #7b61ff);
+    border: none;
+    border-radius: 8px;
+    color: #050816;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 10px;
+}
 
-          <p id="login-status"></p>
-        </form>
-      </div>
-    </section>
-  </main>
-
-  <footer>
-    <p>© <span id="year"></span> IOT — Tous droits réservés</p>
-  </footer>
-
-  <script src="assets/main.js"></script>
-</body>
-</html>
+.login-form button:hover {
+    filter: brightness(1.1);
+}

@@ -37,6 +37,7 @@ last_message: Optional[dict] = None
 mqtt_connected: bool = False
 message_history = deque(maxlen=100)  # Historique des 100 derniers messages
 last_sent_raw_from_web: Optional[str] = None  # Pour ignorer l'écho
+mqtt_client: Optional[mqtt.Client] = None  # Client MQTT global réutilisable
 
 def _on_connect(client, userdata, flags, rc):
     global mqtt_connected
@@ -76,13 +77,14 @@ def _on_message(client, userdata, msg):
     print("[mqtt] message:", message_data)
 
 def _mqtt_loop():
-    client = mqtt.Client()
-    client.on_connect = _on_connect
-    client.on_message = _on_message
+    global mqtt_client
+    mqtt_client = mqtt.Client()
+    mqtt_client.on_connect = _on_connect
+    mqtt_client.on_message = _on_message
     try:
         print(f"[mqtt] connecting to {MQTT_HOST}:{MQTT_PORT} ...")
-        client.connect(MQTT_HOST, MQTT_PORT, keepalive=60)
-        client.loop_forever(retry_first_connection=True)
+        mqtt_client.connect(MQTT_HOST, MQTT_PORT, keepalive=60)
+        mqtt_client.loop_forever(retry_first_connection=True)
     except Exception as e:
         print("[mqtt] connection error:", e)
 
@@ -252,17 +254,18 @@ def iot_send(payload: ChatSendIn, user: SessionUser = Depends(require_auth)):
     }
     message_history.append(message_data)
 
-    # IMPORTANT : Publier sur MQTT UNIQUEMENT le texte brut (pas de JSON)
-    # Comme ça la matrice LED reçoit juste "Salut" au lieu du JSON complet
+    # Vérifier que le client MQTT est connecté
+    if not mqtt_connected or mqtt_client is None:
+        raise HTTPException(status_code=503, detail="MQTT non connecté")
+
+    # Publier sur MQTT avec le client existant (pas de nouvelle connexion)
     try:
-        c = mqtt.Client()
-        c.connect(MQTT_HOST, MQTT_PORT, 30)
-        
         # Mémoriser le message pour ignorer l'écho dans _on_message
         last_sent_raw_from_web = msg
         
-        c.publish(MQTT_PUB_TOPIC, msg)  # ← ICI : juste msg, pas de JSON
-        c.disconnect()
+        # Utiliser le client MQTT global déjà connecté
+        mqtt_client.publish(MQTT_PUB_TOPIC, msg)
+        print(f"[MQTT SEND] Published: {msg}")
     except Exception as e:
         print("[MQTT SEND] error:", e)
         raise HTTPException(status_code=500, detail="Erreur d'envoi MQTT")
