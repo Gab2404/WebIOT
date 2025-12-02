@@ -4,6 +4,6 @@
     "username": "Inoco",
     "email": "gabriel@gmail.com",
     "passwordHash": "$pbkdf2-sha256$29000$2jsnhDBGSInxPudcSylFqA$.QP1p8aaI1CuruDagfKklpe0P6l6ajKptemzThQL7Qw",
-    "role": "user"
+    "role": "admin"
   }
 ]
