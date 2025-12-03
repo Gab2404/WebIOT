@@ -23,10 +23,36 @@ async function checkUserStatus() {
     const loginBtn = document.querySelector('a[href="login.html"]');
     const registerBtn = document.querySelector('a[href="register.html"]');
     const heroSection = document.querySelector(".hero");
+    // Chercher le premier lien de la nav (celui qui dit Messagerie/Accueil)
+    const homeLink = document.querySelector('nav a:first-child');
 
     if (user) {
       if (loginBtn) loginBtn.style.display = "none";
       if (registerBtn) registerBtn.style.display = "none";
+      
+      // Changer "Accueil" en "Messagerie" quand connecté
+      if (homeLink) {
+        homeLink.textContent = "Messagerie";
+        homeLink.href = "index.html";
+        homeLink.classList.add("login-btn-header");
+        
+        // Retirer les anciens event listeners en clonant le noeud
+        const newHomeLink = homeLink.cloneNode(true);
+        homeLink.parentNode.replaceChild(newHomeLink, homeLink);
+        
+        // Ajouter un scroll vers la section chat au lieu de recharger
+        newHomeLink.addEventListener("click", (e) => {
+          if (window.location.pathname === "/" || 
+              window.location.pathname === "/index.html" || 
+              window.location.pathname.endsWith("/index.html")) {
+            e.preventDefault();
+            const chatSection = document.getElementById("mqtt-chat-section");
+            if (chatSection) {
+              chatSection.scrollIntoView({ behavior: "smooth" });
+            }
+          }
+        });
+      }
       
       // Masquer la section hero sur la page d'accueil uniquement
       // Vérifie si on est sur index.html ou la racine
@@ -43,7 +69,11 @@ async function checkUserStatus() {
       const nav = document.querySelector("nav");
       if (!nav) return;
 
-      if (!document.querySelector("#profile-btn")) {
+      // Supprimer les boutons existants pour éviter les doublons
+      const existingProfile = document.querySelector("#profile-btn");
+      const existingLogout = document.querySelector("#logout-btn");
+      
+      if (!existingProfile) {
         const profile = document.createElement("a");
         profile.textContent = "Profil";
         profile.href = "profile.html";
@@ -52,7 +82,7 @@ async function checkUserStatus() {
         nav.appendChild(profile);
       }
 
-      if (!document.querySelector("#logout-btn")) {
+      if (!existingLogout) {
         const logout = document.createElement("a");
         logout.textContent = "Déconnexion";
         logout.href = "#";
@@ -64,9 +94,18 @@ async function checkUserStatus() {
         });
         nav.appendChild(logout);
       }
+      
+      // IMPORTANT : Marquer le lien actif en fonction de la page actuelle
+      markActiveLink();
     } else {
       if (loginBtn) loginBtn.style.display = "";
       if (registerBtn) registerBtn.style.display = "";
+      
+      // Remettre "Accueil" quand déconnecté
+      if (homeLink) {
+        homeLink.textContent = "Accueil";
+        homeLink.href = "index.html";
+      }
       
       // Réafficher la section hero si déconnecté
       if (heroSection) {
@@ -76,11 +115,36 @@ async function checkUserStatus() {
       
       document.querySelector("#logout-btn")?.remove();
       document.querySelector("#profile-btn")?.remove();
+      
+      // Marquer le lien actif même si déconnecté
+      markActiveLink();
     }
   } catch (e) {
     console.error("Erreur statut utilisateur:", e);
   }
 }
+
+// Fonction pour marquer le lien actif selon la page actuelle
+function markActiveLink() {
+  const currentPath = window.location.pathname;
+  const navLinks = document.querySelectorAll("nav a");
+  
+  navLinks.forEach(link => {
+    // Retirer la classe active-page de tous les liens
+    link.classList.remove("active-page");
+    
+    const linkHref = link.getAttribute("href");
+    
+    // Vérifier si le lien correspond à la page actuelle
+    if (linkHref && (
+      currentPath.endsWith(linkHref) || 
+      (linkHref === "index.html" && (currentPath === "/" || currentPath.endsWith("/index.html")))
+    )) {
+      link.classList.add("active-page");
+    }
+  });
+}
+
 checkUserStatus();
 
 // ==========================

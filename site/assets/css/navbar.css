@@ -1,3 +1,7 @@
+/* ==========================
+   NAVBAR
+   ========================== */
+
 .navbar {
     display: flex;
     justify-content: space-between;
@@ -5,12 +9,26 @@
     background: rgba(255, 255, 255, 0.03);
     backdrop-filter: blur(10px);
 }
+
 .navbar a {
     color: #cfd6e1;
     text-decoration: none;
     margin-left: 20px;
     transition: 0.2s;
 }
+
 .navbar a:hover {
     color: white;
+}
+
+/* Style pour le lien actif (page courante) */
+.navbar a.active-page,
+.navbar a.login-btn-header.active-page {
+  background: linear-gradient(90deg, #00e0ff, #7b61ff) !important;
+  color: #050816 !important;
+  font-weight: 600 !important;
+  border: none !important;
+  padding: 6px 14px !important;
+  border-radius: 999px !important;
+  box-shadow: 0 2px 8px rgba(0, 224, 255, 0.4) !important;
 }

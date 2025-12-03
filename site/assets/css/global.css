@@ -1,3 +1,7 @@
+/* ==========================
+   GLOBAL CSS — Base pour toutes les pages
+   ========================== */
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -17,7 +21,9 @@ main {
   flex: 1;
 }
 
-
+/* ==========================
+   Header / Navigation
+   ========================== */
 
 .site-header {
   position: sticky;
@@ -57,7 +63,21 @@ nav a:hover {
   margin-left: 10px;
 }
 
+/* Style pour le lien actif (page courante) */
+nav a.active-page,
+nav a.login-btn-header.active-page {
+  background: linear-gradient(90deg, #00e0ff, #7b61ff) !important;
+  color: #050816 !important;
+  font-weight: 600 !important;
+  border: none !important;
+  padding: 6px 14px !important;
+  border-radius: 999px !important;
+  box-shadow: 0 2px 8px rgba(0, 224, 255, 0.4) !important;
+}
 
+/* ==========================
+   Sections
+   ========================== */
 
 .hero {
   padding: 60px 20px;
@@ -94,7 +114,9 @@ nav a:hover {
   font-size: 1.6rem;
 }
 
-
+/* ==========================
+   Formulaires
+   ========================== */
 
 .form-group {
   margin-bottom: 14px;
@@ -134,7 +156,9 @@ textarea {
   margin: 0 auto;
 }
 
-
+/* ==========================
+   Boutons
+   ========================== */
 
 .submit-btn,
 .btn-primary {
@@ -165,7 +189,9 @@ textarea {
   cursor: not-allowed;
 }
 
-
+/* ==========================
+   Messages de statut
+   ========================== */
 
 #login-status,
 #register-status,
@@ -175,7 +201,9 @@ textarea {
   font-size: 0.9rem;
 }
 
-
+/* ==========================
+   Zones d'affichage
+   ========================== */
 
 #mqtt-output,
 .mqtt-output {
@@ -190,7 +218,9 @@ textarea {
   white-space: pre-wrap;
 }
 
-
+/* ==========================
+   Cartes / Containers
+   ========================== */
 
 .glass-card {
   background: rgba(255, 255, 255, 0.05);
@@ -208,7 +238,9 @@ textarea {
   margin: 0 auto;
 }
 
-
+/* ==========================
+   Footer
+   ========================== */
 
 footer,
 .site-footer {
@@ -218,6 +250,10 @@ footer,
   opacity: 0.8;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
+
+/* ==========================
+   Utilitaires
+   ========================== */
 
 a {
   color: #00e0ff;

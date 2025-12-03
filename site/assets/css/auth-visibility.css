@@ -1,3 +1,22 @@
+/* ==========================
+   Masquage de la section hero pour utilisateurs connectés
+   ========================== */
+
 .hidden-when-logged {
   display: none !important;
+}
+
+/* ==========================
+   Surbrillance du lien actif - Style plus prononcé
+   ========================== */
+
+nav a.active-page,
+nav a.login-btn-header.active-page {
+  background: linear-gradient(90deg, #00e0ff, #7b61ff) !important;
+  color: #050816 !important;
+  font-weight: 600 !important;
+  border: none !important;
+  padding: 6px 14px !important;
+  border-radius: 999px !important;
+  box-shadow: 0 2px 8px rgba(0, 224, 255, 0.4) !important;
 }
