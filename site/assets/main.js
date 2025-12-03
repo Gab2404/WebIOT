@@ -22,10 +22,23 @@ async function checkUserStatus() {
 
     const loginBtn = document.querySelector('a[href="login.html"]');
     const registerBtn = document.querySelector('a[href="register.html"]');
+    const heroSection = document.querySelector(".hero");
 
     if (user) {
       if (loginBtn) loginBtn.style.display = "none";
       if (registerBtn) registerBtn.style.display = "none";
+      
+      // Masquer la section hero sur la page d'accueil uniquement
+      // Vérifie si on est sur index.html ou la racine
+      const isIndexPage = window.location.pathname === "/" || 
+                          window.location.pathname === "/index.html" || 
+                          window.location.pathname.endsWith("/index.html") ||
+                          window.location.href.includes("index.html");
+      
+      if (heroSection && isIndexPage) {
+        heroSection.style.display = "none";
+        heroSection.classList.add("hidden-when-logged");
+      }
 
       const nav = document.querySelector("nav");
       if (!nav) return;
@@ -54,6 +67,13 @@ async function checkUserStatus() {
     } else {
       if (loginBtn) loginBtn.style.display = "";
       if (registerBtn) registerBtn.style.display = "";
+      
+      // Réafficher la section hero si déconnecté
+      if (heroSection) {
+        heroSection.style.display = "";
+        heroSection.classList.remove("hidden-when-logged");
+      }
+      
       document.querySelector("#logout-btn")?.remove();
       document.querySelector("#profile-btn")?.remove();
     }
