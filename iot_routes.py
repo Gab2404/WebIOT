@@ -29,6 +29,7 @@ def iot_send(payload: ChatSendIn, user: SessionUser = Depends(require_auth)):
     puisse l'afficher directement sans avoir à parser du JSON.
     
     Dans l'historique du chat côté web, on stocke les métadonnées complètes.
+    IMPORTANT: Les commandes MODE: ne sont PAS ajoutées à l'historique du chat.
     """
     msg = payload.message.strip()
     if not msg:
@@ -36,16 +37,20 @@ def iot_send(payload: ChatSendIn, user: SessionUser = Depends(require_auth)):
 
     ts = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
 
-    # 1) Ajouter le message de l'utilisateur dans l'historique du chat avec métadonnées
-    entry = {
-        "from": "user",
-        "username": user.username,
-        "payload": msg,
-        "raw": msg,
-        "topic": state.MQTT_PUB_TOPIC,
-        "timestamp": ts,
-    }
-    state.add_chat(entry)
+    # Vérifier si c'est une commande MODE (pour changer le mode de l'ESP32)
+    is_mode_command = msg.startswith("MODE:")
+    
+    # 1) Ajouter le message dans l'historique SEULEMENT si ce n'est PAS une commande MODE
+    if not is_mode_command:
+        entry = {
+            "from": "user",
+            "username": user.username,
+            "payload": msg,
+            "raw": msg,
+            "topic": state.MQTT_PUB_TOPIC,
+            "timestamp": ts,
+        }
+        state.add_chat(entry)
 
     # 2) Publier sur MQTT UNIQUEMENT le texte brut (pas de JSON)
     #    Comme ça, l'ESP32/matrice LED reçoit directement le message au lieu de tout le JSON
@@ -54,7 +59,9 @@ def iot_send(payload: ChatSendIn, user: SessionUser = Depends(require_auth)):
         c.connect(state.MQTT_HOST, state.MQTT_PORT, 30)
 
         # On mémorise ce qu'on envoie pour pouvoir ignorer l'écho dans _on_message
-        state.last_sent_raw_from_web = msg
+        # SAUF pour les commandes MODE (on veut ignorer leur écho de toute façon)
+        if not is_mode_command:
+            state.last_sent_raw_from_web = msg
 
         # IMPORTANT : On envoie JUSTE le message texte brut, PAS de JSON
         c.publish(state.MQTT_PUB_TOPIC, msg)

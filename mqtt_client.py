@@ -26,6 +26,8 @@ def _on_message(client, userdata, msg):
     - Si le message est exactement le dernier payload brut publié par le site
       (state.last_sent_raw_from_web), on considère que c'est l'écho de notre
       propre message -> on l'ignore pour ne pas le dupliquer dans le chat.
+    - Si le message commence par "MODE:", c'est une commande de changement de mode
+      -> on l'ignore également pour ne pas polluer le chat.
     - Tous les autres messages sont ajoutés dans l'historique comme "device".
     """
     raw = msg.payload.decode(errors="ignore")
@@ -34,6 +36,11 @@ def _on_message(client, userdata, msg):
     if state.last_sent_raw_from_web is not None and raw == state.last_sent_raw_from_web:
         # On remet à None pour ne pas ignorer d'autres messages identiques plus tard
         state.last_sent_raw_from_web = None
+        return
+
+    # IMPORTANT: Ignorer les commandes MODE: pour ne pas polluer le chat
+    if raw.startswith("MODE:"):
+        print(f"[MQTT] Ignoring MODE command: {raw}")
         return
 
     try:

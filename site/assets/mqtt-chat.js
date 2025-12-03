@@ -34,6 +34,18 @@ async function checkAuthAndShowChat() {
   }
 }
 
+// Filtrer les messages de commande MODE
+function isCommandMessage(message) {
+  if (typeof message === 'string') {
+    return message.startsWith('MODE:');
+  }
+  if (typeof message === 'object' && message !== null) {
+    const msg = message.msg || message.message || message.payload || '';
+    return String(msg).startsWith('MODE:');
+  }
+  return false;
+}
+
 // Charger les messages depuis le backend
 async function loadMessages() {
   if (!isAuthenticated) return;
@@ -51,9 +63,27 @@ async function loadMessages() {
       mqttStatus.innerHTML = '<span style="color: #ff7b7b;">🔴 Déconnecté</span>';
     }
     
-    // Afficher les messages
+    // Filtrer les messages pour retirer les commandes MODE
     if (json.messages && json.messages.length > 0) {
-      displayMessages(json.messages);
+      const filteredMessages = json.messages.filter(msg => {
+        // Vérifier si c'est un message de commande MODE
+        if (msg.raw && msg.raw.startsWith('MODE:')) {
+          return false;
+        }
+        if (msg.payload) {
+          if (typeof msg.payload === 'string' && msg.payload.startsWith('MODE:')) {
+            return false;
+          }
+          if (typeof msg.payload === 'object' && msg.payload.msg) {
+            if (String(msg.payload.msg).startsWith('MODE:')) {
+              return false;
+            }
+          }
+        }
+        return true;
+      });
+      
+      displayMessages(filteredMessages);
     } else {
       chatMessages.innerHTML = '<p style="opacity: 0.6; text-align: center;">Aucun message pour le moment</p>';
     }

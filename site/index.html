@@ -8,12 +8,69 @@
   <link rel="stylesheet" href="assets/css/navbar.css" />
   <link rel="stylesheet" href="assets/css/chat.css" />
   <link rel="stylesheet" href="assets/css/auth-visibility.css" />
+  <style>
+    /* Style pour le bouton de mode en bas à gauche */
+    .mode-switch-container {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      z-index: 100;
+      display: none; /* Caché par défaut, affiché seulement si connecté */
+    }
+
+    .mode-switch {
+      background: rgba(10, 20, 40, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 10px;
+      padding: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .mode-switch-title {
+      font-size: 0.75rem;
+      opacity: 0.7;
+      margin-bottom: 6px;
+    }
+
+    .mode-buttons {
+      display: flex;
+      gap: 6px;
+    }
+
+    .mode-btn {
+      padding: 6px 12px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.05);
+      color: #f5f5f5;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-size: 0.8rem;
+    }
+
+    .mode-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: #00e0ff;
+    }
+
+    .mode-btn.active {
+      background: linear-gradient(90deg, #00e0ff, #7b61ff);
+      color: #050816;
+      font-weight: 600;
+      border: none;
+    }
+
+    .mode-btn .icon {
+      margin-right: 4px;
+      font-size: 0.9rem;
+    }
+  </style>
 </head>
 <body>
   <header class="site-header">
     <div class="logo">IOT</div>
     <nav>
-      <a href="#about">Messagerie</a>
+      <a href="index.html">Accueil</a>
       <a href="audio-spectrum.html">Spectre Audio</a>
       <a href="login.html" class="login-btn-header">Connexion</a>
       <a href="register.html" class="login-btn-header">S'inscrire</a>
@@ -59,7 +116,148 @@
       </div>
     </section>
 
+    <!-- Bouton de switch de mode en bas à gauche -->
+    <div class="mode-switch-container" id="mode-switch-container">
+      <div class="mode-switch">
+        <div class="mode-switch-title">Mode ESP32</div>
+        <div class="mode-buttons">
+          <button class="mode-btn active" id="mode-display" data-mode="display">
+            <span class="icon">📺</span>
+            <span>Affichage</span>
+          </button>
+          <button class="mode-btn" id="mode-micro" data-mode="micro">
+            <span class="icon">🎤</span>
+            <span>Micro</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+
   <script src="assets/main.js"></script>
   <script src="assets/mqtt-chat.js"></script>
+  <script>
+    // Script pour gérer le switch de mode
+    const modeSwitchContainer = document.getElementById('mode-switch-container');
+    const modeDisplayBtn = document.getElementById('mode-display');
+    const modeMicroBtn = document.getElementById('mode-micro');
+    let currentMode = 'display'; // Mode par défaut : Affichage
+
+    // Afficher le switch de mode seulement si connecté
+    async function checkAuthForModeSwitch() {
+      try {
+        const res = await fetch('/api/auth/me');
+        const json = await res.json();
+        
+        if (json.user) {
+          modeSwitchContainer.style.display = 'block';
+        } else {
+          modeSwitchContainer.style.display = 'none';
+        }
+      } catch (e) {
+        console.error('Erreur vérification auth pour mode switch:', e);
+      }
+    }
+
+    // Changer de mode
+    async function switchMode(mode) {
+      if (currentMode === mode) return;
+
+      currentMode = mode;
+
+      // Mettre à jour l'UI des boutons
+      if (mode === 'display') {
+        modeDisplayBtn.classList.add('active');
+        modeMicroBtn.classList.remove('active');
+      } else {
+        modeMicroBtn.classList.add('active');
+        modeDisplayBtn.classList.remove('active');
+      }
+
+      // Envoyer une commande MQTT pour changer le mode sur l'ESP32
+      try {
+        const command = mode === 'display' ? 'MODE:DISPLAY' : 'MODE:MICRO';
+        
+        const res = await fetch('/api/chat/send', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: command })
+        });
+
+        if (res.ok) {
+          console.log(`Mode changé vers: ${mode}`);
+          
+          // Afficher une notification visuelle
+          showModeNotification(mode);
+        } else {
+          console.error('Erreur lors du changement de mode');
+        }
+      } catch (err) {
+        console.error('Erreur changement mode:', err);
+      }
+    }
+
+    // Afficher une notification de changement de mode
+    function showModeNotification(mode) {
+      const notification = document.createElement('div');
+      notification.style.cssText = `
+        position: fixed;
+        top: 80px;
+        right: 20px;
+        background: rgba(10, 20, 40, 0.95);
+        border: 1px solid #00e0ff;
+        border-radius: 8px;
+        padding: 12px 20px;
+        color: #f5f5f5;
+        font-size: 0.9rem;
+        z-index: 1000;
+        animation: slideIn 0.3s ease-out;
+      `;
+      
+      const modeText = mode === 'display' ? '📺 Mode Affichage activé' : '🎤 Mode Micro activé';
+      notification.textContent = modeText;
+      
+      document.body.appendChild(notification);
+      
+      setTimeout(() => {
+        notification.style.animation = 'slideOut 0.3s ease-in';
+        setTimeout(() => notification.remove(), 300);
+      }, 2000);
+    }
+
+    // Ajouter les animations CSS
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes slideIn {
+        from {
+          transform: translateX(400px);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+      
+      @keyframes slideOut {
+        from {
+          transform: translateX(0);
+          opacity: 1;
+        }
+        to {
+          transform: translateX(400px);
+          opacity: 0;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+
+    // Event listeners pour les boutons
+    modeDisplayBtn.addEventListener('click', () => switchMode('display'));
+    modeMicroBtn.addEventListener('click', () => switchMode('micro'));
+
+    // Vérifier l'auth au chargement
+    checkAuthForModeSwitch();
+  </script>
 </body>
 </html>
