@@ -176,7 +176,7 @@
 
       // Envoyer une commande MQTT pour changer le mode sur l'ESP32
       try {
-        const command = mode === 'display' ? 'MODE:DISPLAY' : 'MODE:MICRO';
+        const command = mode === 'display' ? 'MODE:AFFICHAGE' : 'MODE:MICRO';
         
         const res = await fetch('/api/chat/send', {
           method: 'POST',

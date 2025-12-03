@@ -60,6 +60,11 @@ def _on_message(client, userdata, msg):
         last_sent_raw_from_web = None  # Réinitialiser
         return  # Ne pas ajouter à l'historique
     
+    # IMPORTANT : Ignorer les commandes MODE pour ne pas polluer le chat
+    if raw.startswith("MODE:"):
+        print(f"[mqtt] Ignoring MODE command: {raw}")
+        return  # Ne pas ajouter à l'historique
+    
     try:
         payload = json.loads(raw)
     except Exception:
@@ -245,14 +250,18 @@ def iot_send(payload: ChatSendIn, user: SessionUser = Depends(require_auth)):
 
     ts = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
 
-    # Ajouter dans l'historique avec métadonnées complètes
-    message_data = {
-        "topic": MQTT_PUB_TOPIC,
-        "payload": {"from": "web", "user": user.username, "msg": msg},
-        "raw": msg,
-        "timestamp": ts,
-    }
-    message_history.append(message_data)
+    # Vérifier si c'est une commande MODE
+    is_mode_command = msg.startswith("MODE:")
+
+    # Ajouter dans l'historique SEULEMENT si ce n'est PAS une commande MODE
+    if not is_mode_command:
+        message_data = {
+            "topic": MQTT_PUB_TOPIC,
+            "payload": {"from": "web", "user": user.username, "msg": msg},
+            "raw": msg,
+            "timestamp": ts,
+        }
+        message_history.append(message_data)
 
     # Vérifier que le client MQTT est connecté
     if not mqtt_connected or mqtt_client is None:
@@ -260,8 +269,9 @@ def iot_send(payload: ChatSendIn, user: SessionUser = Depends(require_auth)):
 
     # Publier sur MQTT UNIQUEMENT le texte brut (simple)
     try:
-        # Mémoriser le message pour ignorer l'écho dans _on_message
-        last_sent_raw_from_web = msg
+        # Mémoriser le message pour ignorer l'écho (sauf pour les commandes MODE)
+        if not is_mode_command:
+            last_sent_raw_from_web = msg
         
         # Utiliser le client MQTT global déjà connecté
         mqtt_client.publish(MQTT_PUB_TOPIC, msg)
